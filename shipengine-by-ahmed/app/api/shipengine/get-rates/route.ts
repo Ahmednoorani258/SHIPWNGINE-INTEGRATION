@@ -1,5 +1,5 @@
 import { shipengine } from "@/helper/shipEngine";
-import { Postpone } from "next/dist/server/app-render/dynamic-rendering";
+
 import { NextRequest } from "next/server";
 
 export async function GET(){
@@ -12,18 +12,17 @@ export async function POST(req:NextRequest){
         const shipmentDetails = await shipengine.getRatesWithShipmentDetails({
             shipment:{
                 shipTo:shipToAddress,
-                shipFrom:{
-                    name:"Ahmed",
-                    phone:'03353791610',
-                    addressLine1:"add 1",
-                    addressLine2:"add 2",
-                    cityLocality:"karachi",
-                    stateProvince:"sindh",
-                    addressResidentialIndicator:"yes",
-                    countryCode:"PK",
-                    postalCode:"123"
-
-                },
+                shipFrom: {
+                    name: "John Doe",
+                    phone: "+1 555 123 4567",
+                    addressLine1: "742 Evergreen Terrace",
+                    addressLine2: "Apt 101",
+                    cityLocality: "Springfield",
+                    stateProvince: "IL",
+                    postalCode: "62701",
+                    countryCode: "US",
+                    addressResidentialIndicator: "no",
+                  },
                 packages:packages
             },
             rateOptions:{
@@ -31,13 +30,13 @@ export async function POST(req:NextRequest){
                     process.env.SHIPENGINE_FIRST_COURIER || "",
                     process.env.SHIPENGINE_SECOND_COURIER || "",
                     process.env.SHIPENGINE_THIRD_COURIER || "",
-                    process.env.SHIPENGINE_FOURTH_COURIER || ""
+                    // process.env.SHIPENGINE_FOURTH_COURIER || ""
                 ].filter(Boolean)
             }
         })
 
         return new Response(JSON.stringify(shipmentDetails),{status:200})
-    } catch (error) {
-        return new Response(JSON.stringify(error))
+    } catch (error:any) {
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
 }
